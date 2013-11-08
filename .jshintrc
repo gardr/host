@@ -5,6 +5,7 @@
         "jasmine"   : false,
         "describe"  : false,
         "it"        : false,
+        "xit"       : false,
         "expect"    : false,
         "waitsFor"  : false,
         "runs"      : false,
