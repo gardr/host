@@ -170,7 +170,6 @@ proto.config = function (name, configData) {
     }
 
     this.addToMap(configData);
-    return this;
 };
 
 /* Add data. "Queue" banner for render. */
@@ -185,17 +184,13 @@ proto.queue = function (obj) {
         //this.log(2, 'Queued ' + obj.name + '.');
         this.addToMap(obj);
     }
-    return this;
 };
 
 proto.addToMap = function (input) {
     if (!input || !input.name) {
         throw new Error('Missing name on configuration object');
     }
-    var item = this.get(input.name);
-    state.create(name);
-
-    item = this.getOrCreate(input.name, input);
+    var item = this.getOrCreate(input.name, input);
     return utility.extend(item, input);
 };
 
