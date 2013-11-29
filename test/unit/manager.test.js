@@ -374,7 +374,7 @@ describe('Manager', function () {
             manager.queue(name);
 
             var calls = 0;
-            manager.render(name, function (err, item) {
+            manager.render(name, function () {
                 calls++;
             });
 
@@ -717,7 +717,7 @@ describe('Manager', function () {
             var manager = helpers.testableManager({
                 iframeUrl: iframeUrl
             });
-            manager.flags['foo'] = 'bar';
+            manager.flags.foo = 'bar';
             var name = 'bannerflags_' + helpers.getRandomName();
             var elem = helpers.insertContainer(name);
 
@@ -732,7 +732,7 @@ describe('Manager', function () {
                 var id = item.id;
 
                 waitsFor(function () {
-                    return manager.flags['flag'] = id;
+                    return manager.flags.flag == id;
                 });
             });
         });
