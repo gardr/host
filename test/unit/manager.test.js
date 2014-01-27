@@ -3,11 +3,26 @@ var State = require('../../src/lib/state.js');
 var helpers = require('../testHelpers.js');
 
 var Manager = require('../../src/lib/manager.js');
+var orgCom = Manager._com;
 
 var scriptUrl = '/base/test/fixtures/config_content.js';
 var iframeUrl = '/base/test/fixtures/iframe.html';
 
 describe('Manager', function () {
+    var xdeMethods = ['on', 'off', 'sendTo'];
+    var xde = Manager._xde;
+
+    beforeEach(function () {
+        xdeMethods.forEach(function (method) {
+            sinon.stub(xde, method);
+        });
+    });
+
+    afterEach(function () {
+        xdeMethods.forEach(function (method) {
+            xde[method].restore();
+        });
+    });
 
     function queueRandom(num) {
         var manager = helpers.testableManager();

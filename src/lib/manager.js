@@ -3,7 +3,9 @@
 var State = require('./state.js');
 var extend = require('util-extend');
 var Iframe = require('./iframe.js');
-var com = require('./com.js');
+//var com = require('./com.js');
+var com = {incomming: function () {}};
+var xde = require('cross-domain-events');
 var queryParams = require('query-params');
 var eventListener = require('eventlistener');
 var ALL = '__all';
@@ -103,6 +105,17 @@ function Manager(options) {
     }, this.key, this.options.deactivateCDFS);
 }
 Manager._ALL = ALL;
+if (Object.defineProperty) {
+    Object.defineProperty(Manager, '_xde', {
+        get: function () {
+            return xde;
+        }
+    });
+}
+Manager._setCom = function (newCom) {
+    com = newCom;
+};
+
 var proto = Manager.prototype;
 
 proto._delegate = function (msg, item) {
