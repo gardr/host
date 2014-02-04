@@ -397,6 +397,24 @@ describe('Manager', function () {
         });
 
         it('should render and trigger callback', function (done) {
+            var man = helpers.testableManager();
+            var name = 'full_render-' + helpers.getRandomName();
+            var id = 'container_' + name;
+            //helpers.insertContainer(id);
+
+            man.queue(name, {
+                container: id,
+                url: 'test'
+            });
+
+            man.render(name, function () {
+                done();
+            });
+
+            //xde.
+        });
+
+        it('should render and trigger callback', function (done) {
             var man = helpers.testableManager({
                 iframeUrl: iframeUrl
             });
