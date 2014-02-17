@@ -92,7 +92,11 @@ function Manager(options) {
     }, false);
 
     // this.sharedState = {};
-    com.incomming(function (msg, contentWindow, origin) {
+    xde.on('rendered', function(msg) {
+        this._resolve(msg.data.id);
+    }.bind(this));
+
+    /*com.incomming(function (msg, contentWindow, origin) {
         var item = manager._getById(msg.id);
         if (!item || item.isActive() !== true) {
             return;
@@ -102,18 +106,23 @@ function Manager(options) {
             item.com = com.createOutgoing(origin, contentWindow, com.PREFIX);
         }
         manager._delegate(msg, item);
-    }, this.key, this.options.deactivateCDFS);
+    }, this.key, this.options.deactivateCDFS);*/
 }
 Manager._ALL = ALL;
-if (Object.defineProperty) {
+/*if (Object.defineProperty) {
     Object.defineProperty(Manager, '_xde', {
         get: function () {
             return xde;
         }
     });
-}
+}*/
+Manager._xde = xde;
 Manager._setCom = function (newCom) {
     com = newCom;
+};
+Manager._Iframe = Iframe;
+Manager._setIframe = function (newIframe) {
+    Iframe = newIframe;
 };
 
 var proto = Manager.prototype;
@@ -225,7 +234,9 @@ proto.render = function (name, cb) {
 
         if (item.isActive()) {
             if (item.isResolved()) {
-                this._runCallbacks(item, [null, item]);
+                setTimeout(function () {
+                    this._runCallbacks(item, [null, item]);
+                }.bind(this), 0);
             }
         } else {
             item.set(State.ACTIVE);

@@ -11,17 +11,33 @@ var iframeUrl = '/base/test/fixtures/iframe.html';
 describe('Manager', function () {
     var xdeMethods = ['on', 'off', 'sendTo'];
     var xde = Manager._xde;
+    var orgIframe = Manager._Iframe;
 
-    beforeEach(function () {
+    before(function () {
+        var IframeMock = require('../lib/IframeMock.js');
+        IframeMock.onLoad(function (iframe) {
+            xde.sendTo(window, 'rendered', {
+                id: iframe.id
+            });
+        });
+        Manager._setIframe(IframeMock);
+    });
+
+    after(function () {
+        Manager._setIframe(orgIframe);
+    });
+
+    /*beforeEach(function () {
         xdeMethods.forEach(function (method) {
             sinon.stub(xde, method);
         });
-    });
+    });*/
 
     afterEach(function () {
-        xdeMethods.forEach(function (method) {
+        /*xdeMethods.forEach(function (method) {
             xde[method].restore();
-        });
+        });*/
+        //xde._reset();
     });
 
     function queueRandom(num) {
@@ -334,11 +350,13 @@ describe('Manager', function () {
         });
 
         it('resolving banner should call callback', function (done) {
-            var name = helpers.getRandomName();
+            var name = 'trigger-callback-'+helpers.getRandomName();
+            var id = 'container_' + name;
+            helpers.insertContainer(id);
 
             manager.queue(name, {
-                container: document.createElement('div'),
-                url: scriptUrl
+                container: id,
+                url: 'callback-test'
             });
 
             manager.render(name, function (err, _state) {
@@ -346,11 +364,9 @@ describe('Manager', function () {
                 expect(_state).to.be.an.instanceof(State);
                 done();
             });
-
-            manager._resolve(manager._get(name)[0].id);
         });
 
-        it('more than one callback should _resolve before and after as well', function () {
+        it('more than one callback should _resolve before and after as well', function (done) {
             var calls = 0;
             var name = helpers.getRandomName();
 
@@ -365,6 +381,10 @@ describe('Manager', function () {
                 } else {
                     throw new Error();
                 }
+
+                if (calls === 5) {
+                    done();
+                }
             }
 
             manager.render(name, handler);
@@ -373,10 +393,9 @@ describe('Manager', function () {
             manager.render(name, handler);
             manager.render(name, handler);
             manager.render(name, handler);
-            expect(calls).to.equal(5);
         });
 
-        it('should call the callback for each item with same name', function () {
+        it('should call the callback for each item with same name', function (done) {
             var name = helpers.getRandomName();
             manager.config(name, {
                 url: 'test'
@@ -387,70 +406,10 @@ describe('Manager', function () {
             var calls = 0;
             manager.render(name, function () {
                 calls++;
-            });
 
-            manager._forEachWithName(name, function (item) {
-                manager._resolve(item.id);
-            });
-
-            expect(calls).to.equal(2);
-        });
-
-        it('should render and trigger callback', function (done) {
-            var man = helpers.testableManager();
-            var name = 'full_render-' + helpers.getRandomName();
-            var id = 'container_' + name;
-            //helpers.insertContainer(id);
-
-            man.queue(name, {
-                container: id,
-                url: 'test'
-            });
-
-            man.render(name, function () {
-                done();
-            });
-
-            //xde.
-        });
-
-        it('should render and trigger callback', function (done) {
-            var man = helpers.testableManager({
-                iframeUrl: iframeUrl
-            });
-            var name = 'full_render-' + helpers.getRandomName();
-            var id = 'container_' + name;
-            helpers.insertContainer(id);
-
-            man.queue(name, {
-                container: id,
-                url: 'test'
-            });
-
-            man.render(name, function () {
-                done();
-            });
-        });
-
-        it('multiple document writes should work', function (done) {
-            var manager = helpers.testableManager({
-                iframeUrl: iframeUrl
-            });
-            var name = 'write_3_times_';
-            var elem = helpers.insertContainer(name);
-
-            manager.queue(name, {
-                container: elem,
-                width: 500,
-                height: 100,
-                url: '/base/test/fixtures/docwrite1.js'
-            });
-
-            manager.render(name, function (err, item) {
-                expect(err).to.be.undefined;
-                expect(item.input.width).to.equal(500);
-                expect(item.input.height).to.equal(100);
-                done();
+                if (calls === 2) {
+                    done();
+                }
             });
         });
     });
@@ -482,26 +441,6 @@ describe('Manager', function () {
             rand.forceResolveAll();
             expect(spy.calledOnce).to.be.true;
 
-        });
-
-        it('should _resolve all without commastring', function (done) {
-            var num = 5;
-            var rand = queueRandom(num);
-            var counter = num;
-
-            rand.manager.renderAll(function (err) {
-                expect(err).to.be.undefined;
-                expect(counter).to.equal(0);
-                done();
-            });
-
-            rand.names.forEach(function (name) {
-                rand.manager.render(name, function () {
-                    counter--;
-                });
-                var item = rand.manager._get(name)[0];
-                rand.manager._resolve(item.id);
-            });
         });
 
         it('should render in the priority order', function (done) {
@@ -558,7 +497,7 @@ describe('Manager', function () {
 
         it('should refresh single banner', function (done) {
             var name = 'iframe_refresh' + helpers.getRandomName();
-            var manager = new Manager({iframeUrl: iframeUrl});
+            var manager = helpers.testableManager(); //new Manager({iframeUrl: iframeUrl});
             var container = helpers.insertContainer(name);
 
             manager.queue(name, {
@@ -688,29 +627,6 @@ describe('Manager', function () {
                 msg: 'pixel',
                 id: item.id
             }, item);
-        });
-    });
-
-    describe('BannerFlags', function () {
-        it('should be able to set flag', function (done) {
-            var manager = helpers.testableManager({
-                iframeUrl: iframeUrl
-            });
-            manager.flags.foo = 'bar';
-            var name = 'bannerflags_' + helpers.getRandomName();
-            var elem = helpers.insertContainer(name);
-
-            manager.queue(name, {
-                url: '/base/test/fixtures/bannerflag.js',
-                container: elem
-            });
-
-            manager.render(name, function (err, item) {
-                expect(err).to.be.undefined;
-                expect(item.name).to.equal(name);
-                expect(manager.flags.flag).to.equal(item.id);
-                done();
-            });
         });
     });
 
