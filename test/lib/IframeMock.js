@@ -1,4 +1,4 @@
-var Iframe = require('../../src/lib/iframe.js');
+var Iframe = require('../../lib/iframe.js');
 var callback;
 IframeMock = function () {
 	Iframe.apply(this, arguments);

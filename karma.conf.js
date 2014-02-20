@@ -1,6 +1,27 @@
-var util = require('util');
-var base = require('./karma.base.js');
-
-module.exports = function (karma) {
-    return karma.set(base(karma));
+module.exports = function (config) {
+    return config.set({
+        basePath: '',
+        frameworks: ['mocha', 'browserify', 'sinon-chai'],
+        files: [
+            'test/**/*.js',
+            'lib/**/*.js'
+        ],
+        exclude: [],
+        reporters: ['progress'],
+        colors: true,
+        logLevel: config.LOG_WARN,
+        autoWatch: true,
+        browsers: ['PhantomJS'],
+        captureTimeout: 60000,
+        singleRun: false,
+        browserify: {
+            watch: true,
+            debug: true
+        },
+        preprocessors: {
+            'test/**/*.js': 'browserify',
+            'lib/**/*.js': 'browserify'
+        },
+        plugins: ['karma-*']
+    });
 };

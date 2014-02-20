@@ -1,5 +1,5 @@
 /* jshint nonew: false, expr: true */
-var Iframe       = require('../../src/lib/iframe.js');
+var Iframe       = require('../lib/iframe.js');
 
 describe('iframe', function () {
 

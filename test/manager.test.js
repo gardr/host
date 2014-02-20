@@ -1,20 +1,17 @@
 /*jshint expr: true*/
-var State = require('../../src/lib/state.js');
-var helpers = require('../testHelpers.js');
+var State = require('../lib/state.js');
+var helpers = require('./testHelpers.js');
+var Manager = require('../lib/manager.js');
+var IframeMock = require('./lib/IframeMock.js');
 
-var Manager = require('../../src/lib/manager.js');
-var orgCom = Manager._com;
-
-var scriptUrl = '/base/test/fixtures/config_content.js';
-var iframeUrl = '/base/test/fixtures/iframe.html';
+var scriptUrl = 'test.js';
+var iframeUrl = 'about:blank';
 
 describe('Manager', function () {
-    var xdeMethods = ['on', 'off', 'sendTo'];
     var xde = Manager._xde;
     var orgIframe = Manager._Iframe;
 
     before(function () {
-        var IframeMock = require('../lib/IframeMock.js');
         IframeMock.onLoad(function (iframe) {
             xde.sendTo(window, 'rendered', {
                 id: iframe.id
@@ -25,19 +22,6 @@ describe('Manager', function () {
 
     after(function () {
         Manager._setIframe(orgIframe);
-    });
-
-    /*beforeEach(function () {
-        xdeMethods.forEach(function (method) {
-            sinon.stub(xde, method);
-        });
-    });*/
-
-    afterEach(function () {
-        /*xdeMethods.forEach(function (method) {
-            xde[method].restore();
-        });*/
-        //xde._reset();
     });
 
     function queueRandom(num) {
