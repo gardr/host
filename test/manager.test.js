@@ -58,12 +58,12 @@ describe('Manager', function () {
     describe('options', function () {
 
         it('should have logLevel default to 0', function () {
-            var manager = new Manager();
+            var manager = helpers.testableManager();
             expect(manager.logLevel).to.equal(0);
         });
 
         it('should parse urlFragment for loglevel', function () {
-            var manager = new Manager({ urlFragment: '#loglevel=3' });
+            var manager = helpers.testableManager({ urlFragment: '#loglevel=3' });
             expect(manager.logLevel).to.equal(3);
         });
 
