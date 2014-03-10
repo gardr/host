@@ -50,7 +50,7 @@
     "globalstrict"  : false,
     "iterator"      : false,
     "lastsemic"     : false,
-    "laxbreak"      : true,
+    "laxbreak"      : false,
     "laxcomma"      : false,
     "loopfunc"      : false,
     "moz"           : false,
