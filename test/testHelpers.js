@@ -12,8 +12,8 @@ function testableManager(options){
     options = options||{};
     options.iframeUrl = options.iframeUrl || 'about:blank';
     options.key = (+new Date() + Math.round(Math.random() * 1000)) + '_TEST';
-    if (options.debug) {
-        options.urlFragment = '#loglevel=debug&logto=console';
+    if (options.logLevel) {
+        options.urlFragment = '#loglevel=' + options.logLevel + '&logto=console';
     }
     var man = new Manager(options);
     return man;
