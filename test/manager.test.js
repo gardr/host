@@ -403,33 +403,6 @@ describe('Manager', function () {
 
     describe('renderAll', function () {
 
-        it('should call "__all"-callback when _resolved', function () {
-            var num = 5;
-            var rand = queueRandom(num);
-            var spy = sinon.spy();
-
-            rand.manager.renderAll(spy);
-            rand.forceResolveAll();
-
-            var err = spy.args[0][0];
-            var items = spy.args[0][1];
-
-            expect(err).to.be.undefined;
-            expect(items).to.exist;
-            expect(items.length).to.equal(num);
-            var first = rand.manager._get(rand.names[0])[0];
-            expect(first).to.be.an.instanceof(State);
-        });
-
-        it('should call "__all"-callback only once', function () {
-            var rand = queueRandom(5);
-            var spy = sinon.spy();
-            rand.manager.renderAll(spy);
-            rand.forceResolveAll();
-            expect(spy.calledOnce).to.be.true;
-
-        });
-
         it('should render in the priority order', function (done) {
             var num = 5;
             var rand = queueRandom(num);
@@ -474,10 +447,31 @@ describe('Manager', function () {
             expect(manager.render.args[0][0]).to.equal(rand.names[num -1]);
             expect(manager.render.args[1][0]).to.equal(rand.names[0]);
             expect(manager.render.args[2][0]).to.equal(rand.names[1]);
-
         });
 
-        //it('should _resolve multiple')
+        it('should call callback once for each item refresh', function(done) {
+            var num = 3;
+            var rand = queueRandom(num);
+            var manager = rand.manager;
+            var callCount = 0;
+            var renderedItems = [];
+
+            var onDone = function() {
+                var queuedIds = manager.items.map(function(i) {return i.id;});
+                expect(renderedItems).to.have.members(queuedIds);
+                /*var res = manager.items.map(function(i) {return i.id;}).every(function (id) {
+                    return renderedItems.indexOf(id) !== -1;
+                });
+                expect(res).to.be.true;*/
+                done();
+            };
+            manager.renderAll(null, function(err, item) {
+                renderedItems.push(item.id);
+                if(++callCount === 3) {
+                    onDone();
+                }
+            });
+        });
     });
 
     describe('refresh', function () {
@@ -553,10 +547,9 @@ describe('Manager', function () {
 
             var first = rand.manager._get(rand.names[0])[0];
 
-            rand.manager.refreshAll(function (err, items) {
+            rand.manager.refreshAll(function (err, item) {
                 expect(err).to.be.undefined;
-                expect(items).to.exist;
-                expect(items.length).to.equal(num);
+                expect(item).to.exist;
 
                 expect(first).to.be.an.instanceof(State);
                 expect(first.rendered.times).to.equal(2, first.name + ' should be rendered 2 times');
@@ -567,8 +560,6 @@ describe('Manager', function () {
             expect(first.rendered.times).to.equal(1);
             rand.forceResolveAll();
         });
-
-
     });
 
     describe('fail', function(){
