@@ -2,53 +2,66 @@
 var Iframe       = require('../lib/iframe.js');
 
 describe('iframe', function () {
+    var iframeUrl = 'about:blank';
+    var id, iframe, testNr = 0;
+
+    beforeEach(function () {
+        id = 'iframe-' + (++testNr);
+        iframe = new Iframe(id, {iframeUrl: iframeUrl});
+    });
 
     it('should be defined', function(){
         expect(Iframe).to.exist;
     });
 
+    it('should require id', function () {
+        expect(function(){
+            new Iframe(null, {iframeUrl: iframeUrl});
+        }).to.throw();
+    });
+
     it('should require iframeUrl', function(){
-
         expect(function(){
-            new Iframe('some-test-123');
+            new Iframe(id);
         }).to.throw();
 
         expect(function(){
-            new Iframe('some-test-123', {});
+            new Iframe(id, {});
         }).to.throw();
+    });
 
-        var id = 'iframe1';
-        var iframeUrl = 'about:blank';
-        var frame = new Iframe(id, {iframeUrl: iframeUrl});
+    it('should set id as property on the instance', function () {
+        expect(iframe.id).to.equal(id);
+    });
 
-        expect(frame.id).to.equal(id);
+    it('should use iframeUrl for iframe src', function () {
+        iframe.makeIframe();
+        expect(iframe.element.src.indexOf(iframeUrl) === 0).to.equal(true);
+    });
 
-        frame.makeIframe('some=parameters&and=another');
-
-        expect(frame.element.src.indexOf(iframeUrl) === 0).to.equal(true);
-
-
-        //....
+    it('should set a JSON-string including the id as name-attribute on iframe element', function () {
+        iframe.makeIframe();
+        expect(iframe.element.name).to.exist;
+        var params = JSON.parse(iframe.element.name);
+        expect(params.id).to.equal(id);
     });
 
     it('should have width and height from constructor options', function(){
         var iframe = new Iframe('resize-test', {width:100, height:200, iframeUrl:'about:blank'});
         iframe.makeIframe();
-        //expect(iframe.element.width).to.equal('100px');
         expect(iframe.element.style.width).to.equal('100px');
         expect(iframe.element.style.height).to.equal('200px');
     });
 
-    it('should encode data object to query string', function () {
-        var iframe = new Iframe('data-test', {iframeUrl: 'about:blank'});
+    it('should encode data object to a JSON-string on the name-attribute on iframe element', function () {
         iframe.setData({
             aNumber: 100,
             encodeUrl: 'http://test.com/path?a=b&c=æøå'
         });
         iframe.makeIframe();
-        var lastSepIndex = iframe.element.src.lastIndexOf(Iframe.prototype.SEPARATOR);
-        var dataStr = iframe.element.src.substring(lastSepIndex + Iframe.prototype.SEPARATOR.length);
-        expect(dataStr).to.equal('aNumber=100&encodeUrl=http%3A%2F%2Ftest.com%2Fpath%3Fa%3Db%26c%3D%C3%A6%C3%B8%C3%A5');
+        var params = JSON.parse(iframe.element.name);
+        expect(params).to.exist;
+        expect(params).to.contain.keys('aNumber', 'encodeUrl', 'origin');
     });
 
     it('should resize', function(){
