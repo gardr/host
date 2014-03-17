@@ -1,8 +1,9 @@
-/*jshint expr: true*/
-var State = require('../lib/state.js');
-var helpers = require('./testHelpers.js');
-var Manager = require('../lib/manager.js');
+/*jshint expr: true, nonew: false*/
+var State      = require('../lib/state.js');
+var helpers    = require('./testHelpers.js');
+var Manager    = require('../lib/manager.js');
 var IframeMock = require('./lib/IframeMock.js');
+var extend     = require('util-extend');
 
 var scriptUrl = 'test.js';
 var iframeUrl = 'about:blank';
@@ -58,6 +59,28 @@ describe('Manager', function () {
     });
 
     describe('options', function () {
+        var validOpts = {
+            iframeUrl: iframeUrl,
+            extScript: 'ext.js'
+        };
+
+        function optsWithout (key) {
+            var opts = extend({}, validOpts);
+            opts[key] = null;
+            return opts;
+        }
+
+        it('should throw if iframeUrl is missing', function () {
+            expect(function () {
+                new Manager(optsWithout('iframeUrl'));
+            }).to.throw();
+        });
+
+        it('should throw if extScriptUrl is missing', function () {
+            expect(function () {
+                new Manager(optsWithout('extScriptUrl'));
+            }).to.throw();
+        });
 
         it('should have logLevel default to 0', function () {
             var manager = helpers.testableManager();
@@ -155,7 +178,7 @@ describe('Manager', function () {
                 a: helpers.getRandomName()
             };
             manager.extendInframeData(input);
-            expect(manager.__inject.a).to.equal(input.a);
+            expect(manager.inject.a).to.equal(input.a);
         });
 
     });
@@ -507,7 +530,7 @@ describe('Manager', function () {
 
         it('calling refresh on missing iframe should reset', function(done){
             var name = 'iframe_refresh_crash';
-            var manager = new Manager({iframeUrl: iframeUrl});
+            var manager = helpers.testableManager();
             var container = helpers.insertContainer(name);
 
             manager.queue(name, {

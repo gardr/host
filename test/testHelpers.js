@@ -11,6 +11,7 @@ function insertContainer(id){
 function testableManager(options){
     options = options||{};
     options.iframeUrl = options.iframeUrl || 'about:blank';
+    options.extScriptUrl = options.extScriptUrl || 'ext.js';
     options.key = (+new Date() + Math.round(Math.random() * 1000)) + '_TEST';
     if (options.logLevel) {
         options.urlFragment = '#loglevel=' + options.logLevel + '&logto=console';
