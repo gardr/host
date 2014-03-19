@@ -615,4 +615,19 @@ describe('Manager', function () {
         });
 
     });
+
+    /*describe('plugin', function () {
+        var manager = helpers.testableManager();
+
+        it('should be defined', function () {
+            expect(manager.plugin).to.exist;
+        });
+
+        it('should take a function as argument and call it with manager as first arg', function (done) {
+            manager.plugin(function (mgr) {
+                expect(mgr).to.equal(manager);
+                done();
+            });
+        });
+    });*/
 });
