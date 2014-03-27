@@ -8,7 +8,9 @@ function insertContainer(id){
     return elem;
 }
 
-function testableManager(options){
+function noop () {}
+
+function testableManager(options, pluginHandler){
     options = options||{};
     options.iframeUrl = options.iframeUrl || 'about:blank';
     options.extScriptUrl = options.extScriptUrl || 'ext.js';
@@ -16,7 +18,8 @@ function testableManager(options){
     if (options.logLevel) {
         options.urlFragment = '#loglevel=' + options.logLevel + '&logto=console';
     }
-    var man = new Manager(options);
+    pluginHandler = pluginHandler || {initPlugins: noop};
+    var man = new Manager(options, pluginHandler);
     return man;
 }
 

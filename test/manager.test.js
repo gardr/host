@@ -4,6 +4,7 @@ var helpers    = require('./testHelpers.js');
 var Manager    = require('../lib/manager.js');
 var IframeMock = require('./lib/IframeMock.js');
 var extend     = require('util-extend');
+var PluginApi  = require('../lib/PluginApi.js');
 
 var scriptUrl = 'test.js';
 var iframeUrl = 'about:blank';
@@ -92,6 +93,18 @@ describe('Manager', function () {
             expect(manager.logLevel).to.equal(3);
         });
 
+    });
+
+    describe('pluginHandler', function () {
+        it('should initialize plugins', function () {
+            var spy = sinon.spy();
+            helpers.testableManager(null, {
+                initPlugins : spy
+            });
+
+            expect(spy).to.have.been.calledOnce;
+            expect(spy.args[0][0]).to.be.an.instanceof(PluginApi);
+        });
     });
 
     describe('_get', function(){
@@ -616,18 +629,29 @@ describe('Manager', function () {
 
     });
 
-    /*describe('plugin', function () {
+    describe('plugin', function () {
         var manager = helpers.testableManager();
 
-        it('should be defined', function () {
-            expect(manager.plugin).to.exist;
+        afterEach(function () {
+            manager.pluginApi._reset();
         });
 
-        it('should take a function as argument and call it with manager as first arg', function (done) {
-            manager.plugin(function (mgr) {
-                expect(mgr).to.equal(manager);
+        it('should be defined', function () {
+            expect(manager.pluginApi).to.exist;
+        });
+
+        it('should trigger item:beforerender before creating the iframe', function (done) {
+            var name = helpers.getRandomName();
+
+            manager.pluginApi.on('item:beforerender', function (item) {
+                expect(item.name).to.equal(name);
+                expect(item.options.container).to.exist;
+                expect(item.iframe).not.to.exist;
                 done();
             });
+
+            manager.queue(name, {url: 'about:blank'});
+            manager.render(name);
         });
-    });*/
+    });
 });

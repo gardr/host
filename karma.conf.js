@@ -3,8 +3,9 @@ module.exports = function (config) {
         basePath: '',
         frameworks: ['mocha', 'browserify', 'sinon-chai'],
         files: [
-            'test/**/*.js',
-            'lib/**/*.js'
+            'test/lib/Function-polyfill.js',
+            'lib/**/*.js',
+            'test/**/*.js'
         ],
         exclude: [],
         reporters: ['progress'],

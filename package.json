@@ -9,6 +9,7 @@
   "scripts": {
     "lint": "./node_modules/.bin/jshint --reporter node_modules/jshint-stylish/stylish.js lib test --exclude test/lib",
     "test": "npm run lint && ./node_modules/karma/bin/karma start --single-run",
+    "watch": "npm run lint && ./node_modules/karma/bin/karma start",
     "dist": "mkdir -p dist && ./node_modules/.bin/browserify lib/index.js -d -s gardr.host -o dist/gardr.host.js && ./node_modules/.bin/uglifyjs dist/gardr.host.js -mc -o dist/gardr.host.min.js"
   },
   "homepage": "https://github.com/gardr/host",
