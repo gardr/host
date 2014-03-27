@@ -59,6 +59,7 @@
     "util-extend": "~1.0.1",
     "query-params": "0.0.1",
     "eventlistener": "0.0.1",
-    "cross-domain-events": "0.0.2"
+    "cross-domain-events": "0.0.2",
+    "gardr-core-plugin": "0.0.1"
   }
 }

@@ -4,7 +4,7 @@ var helpers    = require('./testHelpers.js');
 var Manager    = require('../lib/manager.js');
 var IframeMock = require('./lib/IframeMock.js');
 var extend     = require('util-extend');
-var PluginApi  = require('../lib/PluginApi.js');
+var PluginApi  = require('gardr-core-plugin').PluginApi;
 
 var scriptUrl = 'test.js';
 var iframeUrl = 'about:blank';
