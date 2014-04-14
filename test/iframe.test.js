@@ -1,6 +1,10 @@
 /* jshint nonew: false, expr: true */
 var Iframe       = require('../lib/iframe.js');
 
+function getHash(src) {
+    return src.substring(src.indexOf('#')+1);
+}
+
 describe('iframe', function () {
     var iframeUrl = 'about:blank';
     var id, iframe, testNr = 0;
@@ -39,10 +43,12 @@ describe('iframe', function () {
         expect(iframe.element.src.indexOf(iframeUrl) === 0).to.equal(true);
     });
 
-    it('should set a JSON-string including the id as name-attribute on iframe element', function () {
+    it('should set a JSON-string including the id as hash on iframe src', function () {
         iframe.makeIframe();
-        expect(iframe.element.name).to.exist;
-        var params = JSON.parse(iframe.element.name);
+        var hash = getHash(iframe.element.src);
+        expect(hash).to.exist;
+        expect(hash.substring(0,3)).to.equal('%7B');
+        var params = JSON.parse( decodeURIComponent(hash) );
         expect(params.id).to.equal(id);
     });
 
@@ -53,15 +59,29 @@ describe('iframe', function () {
         expect(iframe.element.style.height).to.equal('200px');
     });
 
-    it('should encode data object to a JSON-string on the name-attribute on iframe element', function () {
+    it('should encode data object to a JSON-string as hash on the iframe src', function () {
         iframe.setData({
             aNumber: 100,
             encodeUrl: 'http://test.com/path?a=b&c=æøå'
         });
         iframe.makeIframe();
-        var params = JSON.parse(iframe.element.name);
+        var hash = getHash(iframe.element.src);
+        expect(hash).to.exist;
+        var params = JSON.parse(decodeURIComponent(hash));
         expect(params).to.exist;
         expect(params).to.contain.keys('aNumber', 'encodeUrl', 'origin');
+    });
+
+    it('should send the data object as iframe.name if the iframe URL is close to max URL length', function () {
+        var data = {a: ''}, i=0;
+        while (i++ <= 2083) { data.a += '.'; }
+        iframe.setData(data);
+        iframe.makeIframe();
+        expect(iframe.element.src).not.to.contain('#');
+        expect(iframe.element.name).to.exist;
+        var params = JSON.parse(iframe.element.name);
+        expect(params).to.exist;
+        expect(params).to.contain.keys('a');
     });
 
     it('should resize', function(){
