@@ -1,6 +1,6 @@
 {
   "name": "gardr-host",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "The js part of Gardr which insert and talks with the iframes on the host page",
   "main": "./lib/index.js",
   "directories": {
