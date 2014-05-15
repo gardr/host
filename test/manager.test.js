@@ -61,8 +61,7 @@ describe('Manager', function () {
 
     describe('options', function () {
         var validOpts = {
-            iframeUrl: iframeUrl,
-            extScript: 'ext.js'
+            iframeUrl: iframeUrl
         };
 
         function optsWithout (key) {
@@ -77,10 +76,10 @@ describe('Manager', function () {
             }).to.throw();
         });
 
-        it('should throw if extScriptUrl is missing', function () {
+        it('should not throw if extScriptUrl is missing (deprecated)', function () {
             expect(function () {
-                new Manager(optsWithout('extScriptUrl'));
-            }).to.throw();
+                helpers.testableManager(validOpts);
+            }).not.to.throw();
         });
 
         it('should have logLevel default to 0', function () {
