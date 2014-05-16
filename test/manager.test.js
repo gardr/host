@@ -643,9 +643,24 @@ describe('Manager', function () {
             var name = helpers.getRandomName();
 
             manager.pluginApi.on('item:beforerender', function (item) {
-                expect(item.name).to.equal(name);
+                if (item.name !== name) { return; }
                 expect(item.options.container).to.exist;
                 expect(item.iframe).not.to.exist;
+                done();
+            });
+
+            manager.queue(name, {url: 'about:blank'});
+            manager.render(name);
+        });
+
+        it('should trigger item:afterrender when the iframe has been rendered', function (done) {
+            var name = helpers.getRandomName();
+
+            manager.pluginApi.on('item:afterrender', function (item) {
+                if (item.name !== name) { return; }
+                expect(item.iframe).to.exist;
+                expect(item.rendered.width).to.equal(310);
+                expect(item.rendered.height).to.equal(225);
                 done();
             });
 
