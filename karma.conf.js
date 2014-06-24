@@ -3,9 +3,7 @@ module.exports = function (config) {
         basePath: '',
         frameworks: ['mocha', 'browserify', 'sinon-chai'],
         files: [
-            'test/lib/Function-polyfill.js',
-            'lib/**/*.js',
-            'test/**/*.js'
+            'test/lib/Function-polyfill.js'
         ],
         exclude: [],
         reporters: ['progress'],
@@ -17,11 +15,14 @@ module.exports = function (config) {
         singleRun: false,
         browserify: {
             watch: true,
-            debug: true
+            debug: true,
+            files: [
+                'lib/**/*.js',
+                'test/**/*.js'
+            ]
         },
         preprocessors: {
-            'test/**/*.js': 'browserify',
-            'lib/**/*.js': 'browserify'
+            '/**/*.browserify': 'browserify'
         },
         plugins: ['karma-*']
     });
