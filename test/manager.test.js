@@ -104,6 +104,15 @@ describe('Manager', function () {
             expect(spy).to.have.been.calledOnce;
             expect(spy.args[0][0]).to.be.an.instanceof(PluginApi);
         });
+
+        it('should pass gardr options to plugins', function () {
+            var spy = sinon.spy(), opts = {};
+            helpers.testableManager(opts, {
+                initPlugins : spy
+            });
+
+            expect(spy.args[0][1]).to.equal(opts);
+        });
     });
 
     describe('_get', function(){
