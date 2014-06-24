@@ -16,9 +16,9 @@ Easiest way is through npm.
 
 	$ npm test
 
-When working with the code you can use karma and grunt to get continuous feedback on your tests. Make sure you have `./node_modules/.bin` in your path, or install karma globally.
+When working with the code you can use karma and grunt to get continuous feedback on your tests.
 
-	$ karma start
+	$ npm run watch
 
 ## Logging
 
