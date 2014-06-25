@@ -397,35 +397,6 @@ describe('Manager', function () {
             });
         });
 
-        it('more than one callback should _resolve before and after as well', function (done) {
-            var calls = 0;
-            var name = helpers.getRandomName();
-
-            manager.queue(name, {
-                container: document.createElement('div'),
-                url: scriptUrl
-            });
-
-            function handler(err) {
-                if (!err) {
-                    calls++;
-                } else {
-                    throw new Error();
-                }
-
-                if (calls === 5) {
-                    done();
-                }
-            }
-
-            manager.render(name, handler);
-            manager.render(name, handler);
-            manager._resolve(manager._get(name)[0]);
-            manager.render(name, handler);
-            manager.render(name, handler);
-            manager.render(name, handler);
-        });
-
         it('should call the callback for each item with same name', function (done) {
             var name = helpers.getRandomName();
             manager.config(name, {
@@ -658,6 +629,21 @@ describe('Manager', function () {
                 done();
             });
 
+            manager.queue(name, {url: 'about:blank'});
+            manager.render(name);
+        });
+
+        it('should not trigger item:beforerender more than once for an item', function () {
+            var name = helpers.getRandomName();
+            var renderedIds = [];
+
+            manager.pluginApi.on('item:beforerender', function (item) {
+                expect(renderedIds).not.to.include(item.id);
+                renderedIds.push(item.id);
+            });
+
+            manager.queue(name, {url: 'about:blank'});
+            manager.render(name);
             manager.queue(name, {url: 'about:blank'});
             manager.render(name);
         });
