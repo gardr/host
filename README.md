@@ -1,6 +1,9 @@
 # Garðr (host)
 
 [![Build Status](https://api.travis-ci.org/gardr/host.png?branch=master)](https://travis-ci.org/gardr/host)
+[![Dependency Status](https://david-dm.org/gardr/host.png)](https://david-dm.org/gardr/host)
+[![devDependency Status](https://david-dm.org/gardr/host/dev-status.png)](https://david-dm.org/gardr/host#info=devDependencies)
+
 
 [![NPM](https://nodei.co/npm/gardr-host.png?stars=true&downloads=true)](https://npmjs.org/package/gardr-host)
 
