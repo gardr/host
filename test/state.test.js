@@ -32,6 +32,19 @@ describe('state', function() {
         expect(url1).not.to.equal(url2.url);
     });
 
+    it('should pass on data hash', function () {
+        var opts = {
+            url: '...',
+            data: {
+                one: 1,
+                two: 2
+            }
+        };
+        var payload = State.create('test_unique', opts).getData();
+        expect(payload.data.one).to.equal(1);
+        expect(payload.data.two).to.equal(2);
+    });
+
     it('should not use a regexp with global flag to replace unique token. \n\
         See http://stackoverflow.com/questions/3827456/what-is-wrong-with-my-date-regex/3827500#3827500', function () {
         expect(State._UNIQUE_TOKEN_REGEX.global).to.not.be.ok;
