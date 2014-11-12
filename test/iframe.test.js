@@ -38,9 +38,31 @@ describe('iframe', function () {
         expect(iframe.id).to.equal(id);
     });
 
+    it('should create <iframe> element by default', function () {
+        var asIframe = new Iframe('as-iframe', {iframeUrl: iframeUrl});
+        asIframe.makeIframe();
+        expect(asIframe.element.tagName.toLowerCase()).to.equal('iframe');
+    });
+
+    it('should create <object> element on demand', function () {
+        var asObject = new Iframe('as-object', {iframeUrl: iframeUrl, elementTag: 'object'});
+        asObject.makeIframe();
+        expect(asObject.element.tagName.toLowerCase()).to.equal('object');
+    });
+    
+    it('should set id as property on the instance', function () {
+        expect(iframe.id).to.equal(id);
+    });
+
     it('should use iframeUrl for iframe src', function () {
         iframe.makeIframe();
         expect(iframe.element.src.indexOf(iframeUrl) === 0).to.equal(true);
+    });
+
+    it('should use iframeUrl for object data', function () {
+        var asObject = new Iframe('as-object', {iframeUrl: iframeUrl, elementTag: 'object'});
+        asObject.makeIframe();
+        expect(asObject.element.data.indexOf(iframeUrl) === 0).to.equal(true);
     });
 
     it('should set a JSON-string including the id as hash on iframe src', function () {
