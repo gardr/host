@@ -91,4 +91,15 @@ describe('iframe', function () {
         expect(iframe.element.style.width).to.equal('250px');
         expect(iframe.element.style.height).to.equal('200px');
     });
+
+    it('should not throw an error when resizing if element was removed', function() {
+        var iframe = new Iframe('resize-test', {width:100, height:100, iframeUrl:'about:blank'});
+        var fakeParent  = document.createElement('div');
+
+        iframe.makeIframe();
+        fakeParent.appendChild(iframe.wrapper);
+        iframe.remove();
+        expect(iframe.resize).to.not.throw(Error);
+    });
+
 });
