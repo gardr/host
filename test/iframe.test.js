@@ -59,6 +59,16 @@ describe('iframe', function () {
         expect(iframe.element.style.height).to.equal('200px');
     });
 
+    it('should have a responsive width if no width specified', function () {
+        var iframe = new Iframe('resize-test', {height:200, iframeUrl:'about:blank'});
+        iframe.makeIframe();
+        // Safari on iOS forces the iframe size to equal the visible content size if it has 100% width.
+        // This is a trick to work around that bug. See discussion here:
+        // https://github.com/gardr/host/pull/8
+        expect(iframe.element.style.width).to.equal('1px');
+        expect(iframe.element.style.minWidth).to.equal('100%');
+    });
+
     it('should encode data object to a JSON-string as hash on the iframe src', function () {
         iframe.setData({
             aNumber: 100,
