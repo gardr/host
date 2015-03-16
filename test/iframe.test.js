@@ -112,4 +112,10 @@ describe('iframe', function () {
         expect(iframe.resize).to.not.throw(Error);
     });
 
+    it('should add tabindex as an iframe attribute', function () {
+        iframe.makeIframe();
+        expect(iframe.element.tabIndex).to.equal(-1);
+    });
+
+
 });
