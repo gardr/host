@@ -5,7 +5,7 @@ var expect       = require('expect.js');
 describe('state', function() {
 
     it('should be defined', function() {
-        expect(State).to.exist;
+        expect(State).to.be.ok();
     });
 
     it('creating a new state object', function(){
@@ -13,7 +13,7 @@ describe('state', function() {
         var obj = State.create('someName');
 
         expect(obj).to.be.an('object');
-        expect(obj.id).to.exist;
+        expect(obj.id).to.be.ok();
         expect(obj.state).to.equal(0);
     });
 
@@ -48,7 +48,7 @@ describe('state', function() {
 
     it('should not use a regexp with global flag to replace unique token. \n\
         See http://stackoverflow.com/questions/3827456/what-is-wrong-with-my-date-regex/3827500#3827500', function () {
-        expect(State._UNIQUE_TOKEN_REGEX.global).to.not.be.ok;
+        expect(State._UNIQUE_TOKEN_REGEX.global).to.not.be.ok();
     });
 
     it('creating two states with same name should have unique ids', function () {
