@@ -1,5 +1,6 @@
 /*jshint expr: true*/
 var State = require('../lib/state.js');
+var expect       = require('expect.js');
 
 describe('state', function() {
 

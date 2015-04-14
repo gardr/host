@@ -1,5 +1,6 @@
 /* jshint nonew: false, expr: true */
 var Iframe       = require('../lib/iframe.js');
+var expect       = require('expect.js');
 
 function getHash(src) {
     return src.substring(src.indexOf('#')+1);
@@ -15,23 +16,23 @@ describe('iframe', function () {
     });
 
     it('should be defined', function(){
-        expect(Iframe).to.exist;
+        expect(Iframe).to.be.ok();
     });
 
     it('should require id', function () {
         expect(function(){
             new Iframe(null, {iframeUrl: iframeUrl});
-        }).to.throw();
+        }).to.throwException();
     });
 
     it('should require iframeUrl', function(){
         expect(function(){
             new Iframe(id);
-        }).to.throw();
+        }).to.throwException();
 
         expect(function(){
             new Iframe(id, {});
-        }).to.throw();
+        }).to.throwException();
     });
 
     it('should set id as property on the instance', function () {
@@ -46,7 +47,7 @@ describe('iframe', function () {
     it('should set a JSON-string including the id as hash on iframe src', function () {
         iframe.makeIframe();
         var hash = getHash(iframe.element.src);
-        expect(hash).to.exist;
+        expect(hash).to.ok();
         expect(hash.substring(0,3)).to.equal('%7B');
         var params = JSON.parse( decodeURIComponent(hash) );
         expect(params.id).to.equal(id);
@@ -76,10 +77,12 @@ describe('iframe', function () {
         });
         iframe.makeIframe();
         var hash = getHash(iframe.element.src);
-        expect(hash).to.exist;
+        expect(hash).to.ok();
         var params = JSON.parse(decodeURIComponent(hash));
-        expect(params).to.exist;
-        expect(params).to.contain.keys('aNumber', 'encodeUrl', 'origin');
+        expect(params).to.ok();
+        ['aNumber', 'encodeUrl', 'origin'].forEach(function(key){
+            expect(Object.keys(params)).to.contain(key);
+        });
     });
 
     it('should send the data object as iframe.name if the iframe URL is close to max URL length', function () {
@@ -88,10 +91,10 @@ describe('iframe', function () {
         iframe.setData(data);
         iframe.makeIframe();
         expect(iframe.element.src).not.to.contain('#');
-        expect(iframe.element.name).to.exist;
+        expect(iframe.element.name).to.ok();
         var params = JSON.parse(iframe.element.name);
-        expect(params).to.exist;
-        expect(params).to.contain.keys('a');
+        expect(params).to.ok();
+        expect(params.a).to.ok();
     });
 
     it('should resize', function(){
@@ -109,7 +112,7 @@ describe('iframe', function () {
         iframe.makeIframe();
         fakeParent.appendChild(iframe.wrapper);
         iframe.remove();
-        expect(iframe.resize).to.not.throw(Error);
+        expect(iframe.resize).to.not.throwException(Error);
     });
 
     it('should add tabindex as an iframe attribute', function () {

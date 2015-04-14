@@ -5,6 +5,7 @@ var Manager    = require('../lib/manager.js');
 var IframeMock = require('./lib/IframeMock.js');
 var extend     = require('util-extend');
 var PluginApi  = require('gardr-core-plugin').PluginApi;
+var expect     = require('expect.js');
 
 var scriptUrl = 'test.js';
 var iframeUrl = 'about:blank';
@@ -56,7 +57,7 @@ describe('Manager', function () {
 
     it('should be defined', function () {
         var manager = helpers.testableManager();
-        expect(manager).to.be.an.instanceof(Manager);
+        expect(manager).to.be.an(Manager);
     });
 
     describe('options', function () {
@@ -73,13 +74,13 @@ describe('Manager', function () {
         it('should throw if iframeUrl is missing', function () {
             expect(function () {
                 new Manager(optsWithout('iframeUrl'));
-            }).to.throw();
+            }).to.throwException();
         });
 
         it('should not throw if extScriptUrl is missing (deprecated)', function () {
             expect(function () {
                 helpers.testableManager(validOpts);
-            }).not.to.throw();
+            }).not.to.throwException();
         });
 
         it('should have logLevel default to 0', function () {
@@ -101,8 +102,8 @@ describe('Manager', function () {
                 initPlugins : spy
             });
 
-            expect(spy).to.have.been.calledOnce;
-            expect(spy.args[0][0]).to.be.an.instanceof(PluginApi);
+            expect(spy.calledOnce).to.be(true);
+            expect(spy.args[0][0]).to.be.an(PluginApi);
         });
 
         it('should pass gardr options to plugins', function () {
@@ -219,7 +220,7 @@ describe('Manager', function () {
         });
 
         it('should throw on missing name', function () {
-            expect(manager.queue).to.throw();
+            expect(manager.queue).to.throwException();
         });
 
         it('should allow queueing without options', function () {
@@ -305,7 +306,7 @@ describe('Manager', function () {
 
         it('should return a Error if non existing configname', function () {
             manager.render(helpers.getRandomName(), function (err) {
-                expect(err).to.be.an.instanceof(Error);
+                expect(err).to.be.an(Error);
             });
         });
 
@@ -329,7 +330,7 @@ describe('Manager', function () {
             manager.render(name, function () {});
 
             var items = manager._get(name);
-            expect(items).to.have.length.above(0);
+            expect(items.length).to.have.above(0);
             expect(items[0]).to.exist;
             expect(items[0].iframe).to.exist;
             var iframe = manager._get(name)[0].iframe;
@@ -383,7 +384,7 @@ describe('Manager', function () {
             var obj = queueRandom();
             obj.manager.render(obj.name, function (err, item) {
                 expect(err).not.to.exist;
-                expect(item).to.be.an.instanceof(State);
+                expect(item).to.be.an(State);
                 done();
             });
         });
@@ -472,8 +473,10 @@ describe('Manager', function () {
             var renderedItems = [];
 
             var onDone = function() {
-                var queuedIds = manager.items.map(function(i) {return i.id;});
-                expect(renderedItems).to.have.members(queuedIds);
+                expect(renderedItems).to.be.an('array');
+                manager.items.forEach(function(i) {
+                    expect(renderedItems).to.contain(i.id);
+                });
                 /*var res = manager.items.map(function(i) {return i.id;}).every(function (id) {
                     return renderedItems.indexOf(id) !== -1;
                 });
@@ -566,7 +569,7 @@ describe('Manager', function () {
                 expect(err).to.be.undefined;
                 expect(item).to.exist;
 
-                expect(first).to.be.an.instanceof(State);
+                expect(first).to.be.an(State);
                 expect(first.rendered.times).to.equal(2, first.name + ' should be rendered 2 times');
                 done();
             });
@@ -638,7 +641,7 @@ describe('Manager', function () {
             var renderedIds = [];
 
             manager.pluginApi.on('item:beforerender', function (item) {
-                expect(renderedIds).not.to.include(item.id);
+                expect(renderedIds).not.to.contain(item.id);
                 renderedIds.push(item.id);
             });
 
