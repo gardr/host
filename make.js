@@ -31,6 +31,14 @@ target.test = function () {
     karma('start', '--single-run');
 };
 
+target.ci = function () {
+    target.lint();
+    ['ie', 'chrome', 'android', 'ios', 'firefox'].forEach(function(browserType){
+        env['BROWSER_TYPE'] = browserType;
+        karma('start', '--single-run');
+    });
+};
+
 target.watch = function () {
     target.lint();
     karma('start');
