@@ -36,12 +36,14 @@
   },
   "devDependencies": {
     "browserify": "3.46.1",
+    "es5-shim": "^4.1.1",
     "expect.js": "^0.3.1",
     "jshint": "2.5.1",
     "jshint-stylish": "0.2.0",
     "karma": "0.12.16",
     "karma-browserifast": "^0.6.1",
     "karma-chai": "0.1.0",
+    "karma-es5-shim": "0.0.4",
     "karma-html2js-preprocessor": "0.1.0",
     "karma-mocha": "0.1.4",
     "karma-phantomjs-launcher": "0.1.4",
@@ -51,10 +53,10 @@
     "shelljs": "0.3.0"
   },
   "dependencies": {
-    "util-extend": "^1.0.1",
-    "query-params": "^0.0.1",
+    "cross-domain-events": "^0.0.4",
     "eventlistener": "^0.0.1",
-    "cross-domain-events": "^0.0.2",
-    "gardr-core-plugin": "^0.1.0"
+    "gardr-core-plugin": "^0.1.0",
+    "query-params": "^0.0.1",
+    "util-extend": "^1.0.1"
   }
 }

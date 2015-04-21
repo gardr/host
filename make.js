@@ -33,7 +33,7 @@ target.test = function () {
 
 target.ci = function () {
     target.lint();
-    ['ie', 'chrome', 'android', 'ios', 'firefox'].forEach(function(browserType){
+    ['ie', 'ienew', 'chrome', 'android', 'ios', 'firefox'].forEach(function(browserType){
         env['BROWSER_TYPE'] = browserType;
         karma('start', '--single-run');
     });
