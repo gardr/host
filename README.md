@@ -7,6 +7,9 @@
 
 [![NPM](https://nodei.co/npm/gardr-host.png?stars=true&downloads=true)](https://npmjs.org/package/gardr-host)
 
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/gardr.svg)](https://saucelabs.com/u/gardr)
+
+
 Garðr is a library for embedding content from external sources such as advertisements or similar third party content.
 
 Removes the need for friendly iframes support in delivery systems and supports both HTML, Image and Flash based adverts. The iframe should be hosted on a different domain to enable security-features in the browser that prevents third party content to insert content or get user info from the parent page. postMessage is used for cross-domain communication.

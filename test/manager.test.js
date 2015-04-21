@@ -5,6 +5,7 @@ var Manager    = require('../lib/manager.js');
 var IframeMock = require('./lib/IframeMock.js');
 var extend     = require('util-extend');
 var PluginApi  = require('gardr-core-plugin').PluginApi;
+var expect     = require('expect.js');
 
 var scriptUrl = 'test.js';
 var iframeUrl = 'about:blank';
@@ -56,7 +57,7 @@ describe('Manager', function () {
 
     it('should be defined', function () {
         var manager = helpers.testableManager();
-        expect(manager).to.be.an.instanceof(Manager);
+        expect(manager).to.be.an(Manager);
     });
 
     describe('options', function () {
@@ -73,13 +74,13 @@ describe('Manager', function () {
         it('should throw if iframeUrl is missing', function () {
             expect(function () {
                 new Manager(optsWithout('iframeUrl'));
-            }).to.throw();
+            }).to.throwException();
         });
 
         it('should not throw if extScriptUrl is missing (deprecated)', function () {
             expect(function () {
                 helpers.testableManager(validOpts);
-            }).not.to.throw();
+            }).not.to.throwException();
         });
 
         it('should have logLevel default to 0', function () {
@@ -101,8 +102,8 @@ describe('Manager', function () {
                 initPlugins : spy
             });
 
-            expect(spy).to.have.been.calledOnce;
-            expect(spy.args[0][0]).to.be.an.instanceof(PluginApi);
+            expect(spy.calledOnce).to.be(true);
+            expect(spy.args[0][0]).to.be.an(PluginApi);
         });
 
         it('should pass gardr options to plugins', function () {
@@ -120,7 +121,7 @@ describe('Manager', function () {
             var manager = helpers.testableManager();
 
             var arr = manager._get( helpers.getRandomName() );
-            expect(arr[0]).to.be.undefined;
+            expect(arr[0]).to.be(undefined);
         });
 
         it('should be defined for registered objects', function(){
@@ -128,14 +129,14 @@ describe('Manager', function () {
             var name = 'VALUE_1';
             manager.queue(name);
             var objRes = manager._get(name)[0];
-            expect(objRes).to.exist;
+            expect(objRes).to.ok();
         });
     });
 
     describe('_getById', function () {
         it('should return undefined for nonexisting id', function () {
             var manager = helpers.testableManager();
-            expect(manager._getById('does-not-exist')).to.be.undefined;
+            expect(manager._getById('does-not-exist')).to.be(undefined);
         });
 
         it('should return the state item given an existing id', function() {
@@ -145,7 +146,7 @@ describe('Manager', function () {
             var stateItem = manager._get(name)[0];
 
             var result = manager._getById(stateItem.id);
-            expect(result).to.exist;
+            expect(result).to.be.ok();
             expect(result.id).to.equal(stateItem.id);
             expect(result.name).to.equal(name);
         });
@@ -164,7 +165,7 @@ describe('Manager', function () {
 
             manager.config(name);
 
-            expect(manager._getConfig(name)).to.exist;
+            expect(manager._getConfig(name)).to.ok();
         });
 
         it('should set value and store config', function () {
@@ -176,7 +177,7 @@ describe('Manager', function () {
 
             var obj2 = manager._getConfig(name);
 
-            expect(obj2).to.exist;
+            expect(obj2).to.be.ok();
             expect(obj2.KEY_1).to.equal('VALUE_1');
         });
 
@@ -215,18 +216,18 @@ describe('Manager', function () {
                 scriptUrl: scriptUrl
             });
 
-            expect(manager._getConfig(name)).to.be.undefined;
+            expect(manager._getConfig(name)).to.be(undefined);
         });
 
         it('should throw on missing name', function () {
-            expect(manager.queue).to.throw();
+            expect(manager.queue).to.throwException();
         });
 
         it('should allow queueing without options', function () {
             var name = helpers.getRandomName();
 
             manager.queue(name);
-            expect(manager._get(name)).to.exist;
+            expect(manager._get(name)).to.be.ok();
         });
 
         it('should allow specifying container in config', function () {
@@ -305,7 +306,7 @@ describe('Manager', function () {
 
         it('should return a Error if non existing configname', function () {
             manager.render(helpers.getRandomName(), function (err) {
-                expect(err).to.be.an.instanceof(Error);
+                expect(err).to.be.an(Error);
             });
         });
 
@@ -316,10 +317,10 @@ describe('Manager', function () {
                 container: document.createElement('div'),
                 url: 'test'
             });
-            expect(manager._get(name)[0].iframe).not.to.exist;
+            expect(manager._get(name)[0].iframe).not.to.ok();
             manager.render(name, function () {});
 
-            expect(manager._get(name)[0].iframe).to.exist;
+            expect(manager._get(name)[0].iframe).to.ok();
         });
 
         it('should pass id as unique name to iframe', function () {
@@ -329,9 +330,9 @@ describe('Manager', function () {
             manager.render(name, function () {});
 
             var items = manager._get(name);
-            expect(items).to.have.length.above(0);
-            expect(items[0]).to.exist;
-            expect(items[0].iframe).to.exist;
+            expect(items.length).to.have.above(0);
+            expect(items[0]).to.ok();
+            expect(items[0].iframe).to.ok();
             var iframe = manager._get(name)[0].iframe;
             expect(iframe.name).not.to.equal(name);
         });
@@ -382,8 +383,8 @@ describe('Manager', function () {
         it('resolving banner should call callback', function (done) {
             var obj = queueRandom();
             obj.manager.render(obj.name, function (err, item) {
-                expect(err).not.to.exist;
-                expect(item).to.be.an.instanceof(State);
+                expect(err).not.to.ok();
+                expect(item).to.be.an(State);
                 done();
             });
         });
@@ -429,7 +430,7 @@ describe('Manager', function () {
             });
 
             rand.manager.renderAll(reverseNames.join(','), function (err) {
-                expect(err).to.be.undefined;
+                expect(err).to.be(undefined);
                 done();
             });
             expect(manager.render.callCount).to.equal(rand.names.length);
@@ -451,13 +452,13 @@ describe('Manager', function () {
             });
 
             manager.renderAll(rand.names[num -1], function (err) {
-                expect(err).to.be.undefined;
+                expect(err).to.be(undefined);
 
                 //stub.restore();
                 done();
             });
 
-            expect(stub.calledThrice).to.be.true;
+            expect(stub.calledThrice).to.be(true);
             expect(manager.render.callCount).to.equal(rand.names.length);
             expect(manager.render.args[0][0]).to.equal(rand.names[num -1]);
             expect(manager.render.args[1][0]).to.equal(rand.names[0]);
@@ -472,12 +473,14 @@ describe('Manager', function () {
             var renderedItems = [];
 
             var onDone = function() {
-                var queuedIds = manager.items.map(function(i) {return i.id;});
-                expect(renderedItems).to.have.members(queuedIds);
+                expect(renderedItems).to.be.an('array');
+                manager.items.forEach(function(i) {
+                    expect(renderedItems).to.contain(i.id);
+                });
                 /*var res = manager.items.map(function(i) {return i.id;}).every(function (id) {
                     return renderedItems.indexOf(id) !== -1;
                 });
-                expect(res).to.be.true;*/
+                expect(res).to.be(true);*/
                 done();
             };
             manager.renderAll(null, function(err, item) {
@@ -511,7 +514,7 @@ describe('Manager', function () {
 
                 manager.refresh(name, function (err, item) {
                     expect(item.rendered.times).to.equal(2);
-                    expect(item.iframe.element.src).not.to.be.undefined;
+                    expect(item.iframe.element.src).not.to.be(undefined);
                     expect(item.iframe.element.src).not.to.equal(beforeSrc);
                     done();
                 });
@@ -563,10 +566,10 @@ describe('Manager', function () {
             var first = rand.manager._get(rand.names[0])[0];
 
             rand.manager.refreshAll(function (err, item) {
-                expect(err).to.be.undefined;
-                expect(item).to.exist;
+                expect(err).to.be(undefined);
+                expect(item).to.ok();
 
-                expect(first).to.be.an.instanceof(State);
+                expect(first).to.be.an(State);
                 expect(first.rendered.times).to.equal(2, first.name + ' should be rendered 2 times');
                 done();
             });
@@ -586,7 +589,7 @@ describe('Manager', function () {
             manager.queue(name, {url: 'test'});
 
             manager.render(name, function(err){
-                expect(err).to.exist;
+                expect(err).to.ok();
                 done();
             });
 
@@ -616,7 +619,7 @@ describe('Manager', function () {
         });
 
         it('should be defined', function () {
-            expect(manager.pluginApi).to.exist;
+            expect(manager.pluginApi).to.ok();
         });
 
         it('should trigger item:beforerender before creating the iframe', function (done) {
@@ -624,8 +627,8 @@ describe('Manager', function () {
 
             manager.pluginApi.on('item:beforerender', function (item) {
                 if (item.name !== name) { return; }
-                expect(item.options.container).to.exist;
-                expect(item.iframe).not.to.exist;
+                expect(item.options.container).to.ok();
+                expect(item.iframe).not.to.ok();
                 done();
             });
 
@@ -638,7 +641,7 @@ describe('Manager', function () {
             var renderedIds = [];
 
             manager.pluginApi.on('item:beforerender', function (item) {
-                expect(renderedIds).not.to.include(item.id);
+                expect(renderedIds).not.to.contain(item.id);
                 renderedIds.push(item.id);
             });
 
@@ -653,7 +656,7 @@ describe('Manager', function () {
 
             manager.pluginApi.on('item:afterrender', function (item) {
                 if (item.name !== name) { return; }
-                expect(item.iframe).to.exist;
+                expect(item.iframe).to.ok();
                 expect(item.rendered.width).to.equal(310);
                 expect(item.rendered.height).to.equal(225);
                 done();
