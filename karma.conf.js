@@ -1,13 +1,12 @@
-
-
 module.exports = function(config) {
-
     var settings = {
         basePath: '',
         frameworks: ['mocha', 'browserify', 'es5-shim', 'sinon'],
         files: [
             'test/lib/Function-polyfill.js'
         ],
+        reporters: ['progress'],
+        browsers: ['PhantomJS'],
         exclude: [],
         colors: true,
         logLevel: config.LOG_WARN,
@@ -28,10 +27,7 @@ module.exports = function(config) {
         plugins: ['karma-*'],
     };
 
-    if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
-        settings.reporters = ['progress'];
-        settings.browsers = ['PhantomJS'];
-    } else {
+    if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
         settings.browserDisconnectTimeout = 60000;
         settings.browserNoActivityTimeout = 60000;
         settings.captureTimeout = 60000 * 3;
