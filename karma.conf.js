@@ -24,7 +24,7 @@ module.exports = function(config) {
         preprocessors: {
             '/**/*.browserify': 'browserify'
         },
-        plugins: ['karma-*'],
+        plugins: ['karma-*']
     };
 
     if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
