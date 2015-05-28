@@ -29,7 +29,7 @@ function queueRandom(num) {
             names.forEach(function (name) {
                 manager._forEachWithName(name, function (item) {
                     manager._resolve(item);
-                });f
+                });
             });
         }
     };
@@ -503,9 +503,7 @@ describe('Manager', function () {
 
             manager.render(name, function(err, item){
                 expect(item.state).to.equal(State.RESOLVED);
-
                 expect(item.rendered.times).to.equal(1);
-                var beforeSrc = item.iframe.element.src;
 
                 manager.refresh(name, function (err, item) {
                     expect(item.rendered.times).to.equal(2);
