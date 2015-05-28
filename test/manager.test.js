@@ -548,6 +548,7 @@ describe('Manager', function () {
     describe('refreshAll', function () {
 
         it('should refresh all banners', function (done) {
+            this.timeout(10000);
             var num = 10;
             var rand = queueRandom(num);
 
