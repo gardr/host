@@ -460,6 +460,7 @@ describe('Manager', function () {
         });
 
         it('should call callback once for each item refresh', function(done) {
+            this.timeout(5000);
             var num = 3;
             var rand = queueRandom(num);
             var manager = rand.manager;
