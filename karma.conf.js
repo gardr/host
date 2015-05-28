@@ -3,7 +3,10 @@ module.exports = function(config) {
         basePath: '',
         frameworks: ['mocha', 'browserify', 'es5-shim', 'sinon'],
         files: [
-            'test/lib/Function-polyfill.js'
+            {
+                pattern: 'test/fixtures/echo-iframe.html',
+                included: false
+            },
         ],
         reporters: ['progress'],
         browsers: ['PhantomJS'],

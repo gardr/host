@@ -1,4 +1,4 @@
-var Manager = require('../lib/manager.js');
+var Manager = require('../../lib/manager.js');
 
 function insertContainer(id){
     var elem = document.createElement('div');
@@ -11,15 +11,19 @@ function insertContainer(id){
 function noop () {}
 
 function testableManager(options, pluginHandler){
-    options = options||{};
-    options.iframeUrl = options.iframeUrl || 'about:blank';
+    var now = (+ new Date())
+    options = options || {};
+    options.iframeUrl = options.iframeUrl || '/base/test/fixtures/echo-iframe.html?' + now;
     options.extScriptUrl = options.extScriptUrl || 'ext.js';
-    options.key = (+new Date() + Math.round(Math.random() * 1000)) + '_TEST';
+    options.key = (now - Math.round(Math.random() * 1000)) + '_TEST';
     if (options.logLevel) {
         options.urlFragment = '#loglevel=' + options.logLevel + '&logto=console';
     }
     pluginHandler = pluginHandler || {initPlugins: noop};
     var man = new Manager(options, pluginHandler);
+
+    window.xde = Manager._xde;
+
     return man;
 }
 

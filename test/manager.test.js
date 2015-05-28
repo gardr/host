@@ -1,59 +1,41 @@
 /*jshint expr: true, nonew: false*/
 var State      = require('../lib/state.js');
-var helpers    = require('./testHelpers.js');
 var Manager    = require('../lib/manager.js');
-var IframeMock = require('./lib/IframeMock.js');
 var extend     = require('util-extend');
 var PluginApi  = require('gardr-core-plugin').PluginApi;
 var expect     = require('expect.js');
 
-var scriptUrl = 'test.js';
-var iframeUrl = 'about:blank';
+var helpers    = require('./lib/testHelpers.js');
+
+var SCRIPT_URL = 'test.js';
+
+function queueRandom(num) {
+    var manager = helpers.testableManager();
+    var names = helpers.getRandomNames(num || 1);
+
+    names.forEach(function (name, i) {
+        manager.queue(name, {
+            url: SCRIPT_URL + '?' + i,
+            height: 225,
+            width: 310
+        });
+    });
+
+    return {
+        manager: manager,
+        name: names[0],
+        names: names,
+        forceResolveAll: function () {
+            names.forEach(function (name) {
+                manager._forEachWithName(name, function (item) {
+                    manager._resolve(item);
+                });f
+            });
+        }
+    };
+}
 
 describe('Manager', function () {
-    var xde = Manager._xde;
-    var orgIframe = Manager._Iframe;
-
-    before(function () {
-        IframeMock.onLoad(function (iframe) {
-            xde.sendTo(window, 'rendered', {
-                id: iframe.id,
-                width: 310,
-                height: 225
-            });
-        });
-        Manager._setIframe(IframeMock);
-    });
-
-    after(function () {
-        Manager._setIframe(orgIframe);
-    });
-
-    function queueRandom(num) {
-        var manager = helpers.testableManager();
-        var names = helpers.getRandomNames(num || 1);
-
-        names.forEach(function (name) {
-            manager.queue(name, {
-                container: document.createElement('div'),
-                url: scriptUrl,
-                height: 225
-            });
-        });
-
-        return {
-            manager: manager,
-            name: names[0],
-            names: names,
-            forceResolveAll: function () {
-                names.forEach(function (name) {
-                    manager._forEachWithName(name, function (item) {
-                        manager._resolve(item);
-                    });
-                });
-            }
-        };
-    }
 
     it('should be defined', function () {
         var manager = helpers.testableManager();
@@ -61,8 +43,10 @@ describe('Manager', function () {
     });
 
     describe('options', function () {
+        var IFRAME_URL = '/base/test/fixtures/echo-iframe.html';
+
         var validOpts = {
-            iframeUrl: iframeUrl
+            iframeUrl: IFRAME_URL
         };
 
         function optsWithout (key) {
@@ -188,7 +172,7 @@ describe('Manager', function () {
 
             manager.config(name, {done: spy});
             manager.queue(name, {
-                scriptUrl: scriptUrl
+                scriptUrl: SCRIPT_URL
             });
 
             manager._resolve(manager._get(name)[0]);
@@ -213,7 +197,8 @@ describe('Manager', function () {
 
             manager.queue(name, {
                 unique: name,
-                scriptUrl: scriptUrl
+                // wrong name?
+                scriptUrl: SCRIPT_URL
             });
 
             expect(manager._getConfig(name)).to.be(undefined);
@@ -250,7 +235,8 @@ describe('Manager', function () {
 
             manager.queue(name, {
                 unique: name,
-                scriptUrl: scriptUrl
+                // wrong name?
+                scriptUrl: SCRIPT_URL
             });
 
             expect(manager._get(name).length).to.equal(1);
@@ -372,11 +358,11 @@ describe('Manager', function () {
 
             manager.queue(name, {
                 container: document.createElement('div'),
-                url: scriptUrl
+                url: SCRIPT_URL
             });
 
             manager.render(name, function () {});
-            expect(manager._get(name)[0].iframe.data.url).to.equal(scriptUrl);
+            expect(manager._get(name)[0].iframe.data.url).to.equal(SCRIPT_URL);
 
         });
 
@@ -429,9 +415,13 @@ describe('Manager', function () {
                 if (cb) {cb();}
             });
 
+            var callCount = 0;
             rand.manager.renderAll(reverseNames.join(','), function (err) {
+                callCount++;
                 expect(err).to.be(undefined);
-                done();
+                if (callCount === num) {
+                    done();
+                }
             });
             expect(manager.render.callCount).to.equal(rand.names.length);
             expect(manager.render.args[0][0]).to.equal(reverseNames[0]);
@@ -451,11 +441,15 @@ describe('Manager', function () {
                 if (cb) {cb();}
             });
 
+            var callCount = 0;
             manager.renderAll(rand.names[num -1], function (err) {
+                callCount++;
                 expect(err).to.be(undefined);
 
-                //stub.restore();
-                done();
+                if (callCount === num) {
+                    done();
+                }
+
             });
 
             expect(stub.calledThrice).to.be(true);
@@ -484,8 +478,9 @@ describe('Manager', function () {
                 done();
             };
             manager.renderAll(null, function(err, item) {
+                callCount++;
                 renderedItems.push(item.id);
-                if(++callCount === 3) {
+                if(callCount === num) {
                     onDone();
                 }
             });
@@ -496,14 +491,14 @@ describe('Manager', function () {
 
         it('should refresh single banner', function (done) {
             var name = 'iframe_refresh' + helpers.getRandomName();
-            var manager = helpers.testableManager(); //new Manager({iframeUrl: iframeUrl});
+            var manager = helpers.testableManager();
             var container = helpers.insertContainer(name);
 
             manager.queue(name, {
-                container: container,
-                url: scriptUrl,
-                width: 123,
-                height: 123
+                'container': container,
+                'url': SCRIPT_URL,
+                'width': 123,
+                'height': 123
             });
 
             manager.render(name, function(err, item){
@@ -514,8 +509,6 @@ describe('Manager', function () {
 
                 manager.refresh(name, function (err, item) {
                     expect(item.rendered.times).to.equal(2);
-                    expect(item.iframe.element.src).not.to.be(undefined);
-                    expect(item.iframe.element.src).not.to.equal(beforeSrc);
                     done();
                 });
 
@@ -530,7 +523,7 @@ describe('Manager', function () {
 
             manager.queue(name, {
                 container: container,
-                url: scriptUrl,
+                url: SCRIPT_URL,
                 width: 123,
                 height: 123
             });
@@ -560,23 +553,38 @@ describe('Manager', function () {
             var num = 10;
             var rand = queueRandom(num);
 
-            rand.manager.renderAll();
-            rand.forceResolveAll();
+            var historyLength = history.length;
 
-            var first = rand.manager._get(rand.names[0])[0];
-
-            rand.manager.refreshAll(function (err, item) {
-                expect(err).to.be(undefined);
-                expect(item).to.ok();
-
-                expect(first).to.be.an(State);
-                expect(first.rendered.times).to.equal(2, first.name + ' should be rendered 2 times');
-                done();
+            var callCount = 0;
+            rand.manager.renderAll(function(){
+                callCount ++;
+                if (callCount === num) {
+                    expect(historyLength).to.equal(history.length);
+                    next();
+                }
             });
 
-            expect(first.state).to.equal(State.REFRESHING, 'expected state to be equal to NEEDS_REFRESH');
-            expect(first.rendered.times).to.equal(1);
-            rand.forceResolveAll();
+            function next() {
+                var callCount2 = 0;
+                var first = rand.manager._get(rand.names[0])[0];
+
+                expect(first.rendered.times).to.equal(1);
+
+                rand.manager.refreshAll(function (err, item) {
+                    callCount2++;
+                    expect(err).to.be(undefined);
+                    expect(item).to.ok();
+
+                    expect(first).to.be.an(State);
+                    expect(first.rendered.times).to.equal(2, first.name + ' should be rendered 2 times');
+                    if (callCount2 === num) {
+                        expect(historyLength).to.equal(history.length);
+                        done();
+                    }
+                });
+
+                expect(first.state).to.equal(State.REFRESHING, 'expected state to be equal to NEEDS_REFRESH');
+            }
         });
     });
 
@@ -603,9 +611,7 @@ describe('Manager', function () {
 
         describe('resize', function () {
 
-            it('should not resize if ignoreResize is true', function () {
-                //TODO
-            });
+            it.skip('should not resize if ignoreResize is true', function () {});
 
         });
 
@@ -662,7 +668,7 @@ describe('Manager', function () {
                 done();
             });
 
-            manager.queue(name, {url: 'about:blank'});
+            manager.queue(name, {url: 'about:blank', width: 310, height: 225});
             manager.render(name);
         });
     });
