@@ -1,6 +1,6 @@
 {
   "name": "gardr-host",
-  "version": "0.6.5",
+  "version": "1.0.0-alpha.1",
   "description": "The js part of Gardr which insert and talks with the iframes on the host page",
   "main": "./lib/index.js",
   "directories": {
@@ -35,21 +35,20 @@
     "url": "https://github.com/gardr/host/issues"
   },
   "devDependencies": {
-    "browserify": "3.46.1",
+    "browserify": "9.0.8",
     "es5-shim": "^4.1.1",
     "expect.js": "^0.3.1",
     "jshint": "2.5.1",
     "jshint-stylish": "0.2.0",
-    "karma": "0.12.16",
-    "karma-browserifast": "^0.6.1",
+    "karma": "0.12.31",
+    "karma-browserify": "4.1.2",
     "karma-chai": "0.1.0",
     "karma-es5-shim": "0.0.4",
-    "karma-html2js-preprocessor": "0.1.0",
-    "karma-mocha": "0.1.4",
+    "karma-mocha": "0.1.10",
     "karma-phantomjs-launcher": "0.1.4",
     "karma-sauce-launcher": "^0.2.10",
     "karma-sinon": "^1.0.4",
-    "mocha": "1.20.1",
+    "mocha": "2.2.4",
     "shelljs": "0.3.0"
   },
   "dependencies": {
