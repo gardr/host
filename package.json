@@ -35,20 +35,20 @@
     "url": "https://github.com/gardr/host/issues"
   },
   "devDependencies": {
-    "browserify": "^10.2.1",
+    "browserify": "9.0.8",
     "es5-shim": "^4.1.1",
     "expect.js": "^0.3.1",
     "jshint": "2.5.1",
     "jshint-stylish": "0.2.0",
-    "karma": "^0.12.33",
-    "karma-browserify": "^4.2.1",
+    "karma": "0.12.31",
+    "karma-browserify": "4.1.2",
     "karma-chai": "0.1.0",
     "karma-es5-shim": "0.0.4",
-    "karma-mocha": "0.1.4",
+    "karma-mocha": "0.1.10",
     "karma-phantomjs-launcher": "0.1.4",
     "karma-sauce-launcher": "^0.2.10",
     "karma-sinon": "^1.0.4",
-    "mocha": "1.20.1",
+    "mocha": "2.2.4",
     "shelljs": "0.3.0"
   },
   "dependencies": {
