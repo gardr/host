@@ -7,6 +7,7 @@ module.exports = function(config) {
                 pattern: 'test/fixtures/echo-iframe.html',
                 included: false
             },
+            'test/**/*.test.js'
         ],
         reporters: ['progress'],
         browsers: ['PhantomJS'],
@@ -19,13 +20,10 @@ module.exports = function(config) {
         browserify: {
             watch: true,
             debug: true,
-            files: [
-                'lib/**/*.js',
-                'test/**/*.js'
-            ]
+            bundle: true
         },
         preprocessors: {
-            '/**/*.browserify': 'browserify'
+            'test/**/*.test.js': 'browserify'
         },
         plugins: ['karma-*']
     };
