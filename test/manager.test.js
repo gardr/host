@@ -567,14 +567,14 @@ describe('Manager', function () {
                 var first = rand.manager._get(rand.names[0])[0];
 
                 expect(first.rendered.times).to.equal(1);
+                expect(first).to.be.an(State);
 
                 rand.manager.refreshAll(function (err, item) {
                     callCount2++;
                     expect(err).to.be(undefined);
                     expect(item).to.ok();
 
-                    expect(first).to.be.an(State);
-                    expect(first.rendered.times).to.equal(2, first.name + ' should be rendered 2 times');
+                    expect(item.rendered.times).to.equal(2, first.name + ' should be rendered 2 times');
                     if (callCount2 === num) {
                         expect(historyLength).to.equal(history.length);
                         done();

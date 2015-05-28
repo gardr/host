@@ -20,7 +20,9 @@
         <script>
             window.sendResponse = function sendResponse() {
                 var payload = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
-                parent.xde.sendTo(window.parent, 'rendered', payload);
+                setTimeout(function(){
+                    parent.xde.sendTo(window.parent, 'rendered', payload);
+                }, 0);
             };
 
             function add(name, cb){
