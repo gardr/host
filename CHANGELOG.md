@@ -8,3 +8,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixes
 - Cross-domain-events upgraded to 0.4.0 for legacy IE support
+- Cleans up items with removed containers from document

@@ -544,6 +544,38 @@ describe('Manager', function () {
 
             });
         });
+
+
+        it('calling refresh on missing container should invalidate and cleanup', function(done){
+            var name = 'iframe_refresh_invalidate';
+            var manager = helpers.testableManager();
+            var container = helpers.insertContainer(name);
+
+            manager.queue(name, {
+                container: container,
+                url: SCRIPT_URL,
+                width: 123,
+                height: 123
+            });
+
+            manager.render(name, function(err, item){
+                expect(item.state).to.equal(State.RESOLVED);
+                expect(item.rendered.times).to.equal(1);
+
+                item.options.container.parentNode.removeChild(item.options.container);
+
+                manager.refresh(name, function (err) {
+                    expect(err).to.be.an(Error);
+                    expect(item.options.container).to.be(null);
+                    expect(item.iframe).to.be(null);
+
+                    expect(manager.items.length).to.be(0);
+
+                    done();
+                });
+
+            });
+        });
     });
 
     describe('refreshAll', function () {
