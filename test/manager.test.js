@@ -298,9 +298,10 @@ describe('Manager', function () {
 
         it('should create an iframe', function () {
             var name = helpers.getRandomName();
-
+            var container = document.createElement('div');
+            document.body.appendChild(container);
             manager.queue(name, {
-                container: document.createElement('div'),
+                container: container,
                 url: 'test'
             });
             expect(manager._get(name)[0].iframe).not.to.ok();
@@ -338,9 +339,11 @@ describe('Manager', function () {
             var name = helpers.getRandomName();
             var width = 999;
             var height = 444;
+            var container = document.createElement('div');
+            document.body.appendChild(container);
 
             manager.queue(name, {
-                container: document.createElement('div'),
+                container: container,
                 url: 'test',
                 width: width,
                 height: height
@@ -355,16 +358,36 @@ describe('Manager', function () {
 
         it('should set script url as data on iframe', function () {
             var name = helpers.getRandomName();
+            var container = document.createElement('div');
+            document.body.appendChild(container);
 
             manager.queue(name, {
-                container: document.createElement('div'),
+                container: container,
                 url: SCRIPT_URL
             });
 
             manager.render(name, function () {});
             expect(manager._get(name)[0].iframe.data.url).to.equal(SCRIPT_URL);
-
         });
+
+        it('should cleanup when trying to render banners without a parent', function () {
+            var name = helpers.getRandomName();
+            var container = document.createElement('div');
+
+            manager.queue(name, {
+                container: container,
+                url: SCRIPT_URL
+            });
+
+            manager.render(name, function (err) {
+                expect(err).to.be.an(Error);
+                expect(manager._get(name)[0].options.container).to.be(null);
+                expect(manager._get(name)[0].iframe).to.be(null);
+                expect(manager.items.length).to.be(0);
+
+            });
+        });
+
 
         it('resolving banner should call callback', function (done) {
             var obj = queueRandom();
