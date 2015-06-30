@@ -683,6 +683,17 @@ describe('Manager', function () {
             expect(manager.pluginApi).to.ok();
         });
 
+        it('should trigger item:queued after queuing item', function(done) {
+            var name = helpers.getRandomName();
+
+            manager.pluginApi.on('item:queued', function(item) {
+                expect(item.name).to.equal(name);
+                done();
+            });
+
+            manager.queue(name, {url: 'about:blank'});
+        });
+
         it('should trigger item:beforerender before creating the iframe', function (done) {
             var name = helpers.getRandomName();
 
