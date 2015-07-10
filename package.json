@@ -45,10 +45,11 @@
     "karma-chai": "0.1.0",
     "karma-es5-shim": "0.0.4",
     "karma-mocha": "0.1.10",
-    "karma-phantomjs-launcher": "0.1.4",
+    "karma-phantomjs-launcher": "0.2.0",
     "karma-sauce-launcher": "^0.2.10",
     "karma-sinon": "^1.0.4",
     "mocha": "2.2.4",
+    "phantomjs2": "^2.0.0",
     "shelljs": "0.3.0"
   },
   "dependencies": {
