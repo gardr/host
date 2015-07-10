@@ -36,7 +36,7 @@ function queueRandom(num) {
 }
 
 describe('Manager', function () {
-    this.timeout(5000);    
+    this.timeout(5000);
 
     it('should be defined', function () {
         var manager = helpers.testableManager();
@@ -513,7 +513,82 @@ describe('Manager', function () {
         });
     });
 
-    describe('update', function() {
+    describe('setUrl', function() {
+        it('should update url', function(done) {
+            var name = 'iframe_update_url' + helpers.getRandomName();
+            var manager = helpers.testableManager();
+
+            var container = helpers.insertContainer(name);
+
+            manager.queue(name, {
+                'container': container,
+                'url': SCRIPT_URL
+            });
+
+            manager.render(name, function(err, item){
+                expect(item.state).to.equal(State.RESOLVED);
+
+                manager.setUrl(name, SCRIPT_URL, function(err, item) {
+
+                    expect(item.rendered.times).to.equal(1);
+
+                    manager.setUrl(name, SCRIPT_URL + '?some=other', function(err, item) {
+
+                        expect(item.rendered.times).to.equal(2);
+
+                        manager.refresh(name, function (err, item) {
+                            expect(item.options.url).to.equal( SCRIPT_URL + '?some=other');
+
+                            expect(item.rendered.times).to.equal(3);
+                            done();
+                        });
+                    });
+
+
+                });
+
+            });
+
+        });
+    });
+
+    describe('setData', function() {
+        it('should update data', function(done) {
+            var name = 'iframe_update_state' + helpers.getRandomName();
+            var manager = helpers.testableManager();
+
+            var container = helpers.insertContainer(name);
+
+            manager.queue(name, {
+                'container': container,
+                'url': SCRIPT_URL,
+                'width': 123,
+                'height': 123,
+                'data': {another: 321}
+            });
+
+            manager.render(name, function(err, item){
+                expect(item.state).to.equal(State.RESOLVED);
+
+                manager.setData(name, {random: 123}, function(err, item) {
+
+                    expect(item.rendered.times).to.equal(2);
+
+                    manager.refresh(name, function (err, item) {
+                        expect(item.options.data.random).to.equal(123);
+                        expect(item.options.data.another).to.equal(321);
+
+                        expect(item.rendered.times).to.equal(3);
+                        done();
+                    });
+                });
+
+            });
+
+        });
+    });
+
+    describe('_update', function() {
 
         it('should update state', function(done) {
             var name = 'iframe_update_state' + helpers.getRandomName();
@@ -532,7 +607,7 @@ describe('Manager', function () {
             manager.render(name, function(err, item){
                 expect(item.state).to.equal(State.RESOLVED);
                 expect(item.rendered.width).to.equal(123);
-                manager.update(name, {
+                manager._update(name, {
                     width: 300,
                     height: 300,
                     url: SCRIPT_URL + '?param1=23',
