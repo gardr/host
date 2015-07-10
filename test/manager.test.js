@@ -723,6 +723,39 @@ describe('Manager', function () {
             manager.render(name);
         });
 
+        var _i = document.createElement('iframe');
+        _i.allowfullscreen = _i.webkitallowfullscreen = _i.mozallowfullscreen = true;
+        if (_i.allowfullscreen || _i.webkitallowfullscreen || _i.mozallowfullscreen) {
+            it('should not enable fullcreen by default', function(done) {
+                var name = helpers.getRandomName();
+
+                manager.queue(name, {url: 'about:blank'});
+                manager.render(name, function(err, item){
+                    expect(item.iframe.element.allowfullscreen).not.to.be.ok();
+                    expect(item.iframe.element.webkitallowfullscreen).not.to.be.ok();
+                    expect(item.iframe.element.mozallowfullscreen).not.to.be.ok();
+                    done();
+                });
+            });
+
+            it('should allow to pass allowfullscreen to iframe', function(done) {
+                var name = helpers.getRandomName();
+
+
+                manager.queue(name, {url: 'about:blank', allowfullscreen: true});
+                manager.render(name, function(err, item){
+                    expect(
+                        item.iframe.element.allowfullscreen||
+                        item.iframe.element.webkitallowfullscreen||
+                        item.iframe.element.mozallowfullscreen
+                    ).to.be.ok();
+                    done();
+                });
+            });
+        }
+
+
+
         it('should trigger item:afterrender when the iframe has been rendered', function (done) {
             var name = helpers.getRandomName();
 
