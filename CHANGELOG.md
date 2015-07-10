@@ -12,3 +12,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### New / Added
 - Trigger "item:queued" for the pluginApi on item queued (sgulseth)
+- Added possibility to update state/options for each position ( inteded to update state before e.g. refresh )
