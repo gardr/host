@@ -21,11 +21,12 @@
             window.sendResponse = function sendResponse(msg) {
                 var payload = JSON.parse(decodeURIComponent(window.location.hash.substring(1)));
                 if (msg && msg.data) {
-                    if (typeof msg.data === 'string') {
-                        msg.data = JSON.parse(msg.data);
+                    var data = msg.data;
+                    if (typeof data === 'string') {
+                        data = JSON.parse(msg.data);
                     }
-                    if (typeof msg.data === 'object' && msg.data.data.hash) {
-                        payload = JSON.parse(decodeURIComponent(msg.data.data.hash));
+                    if (typeof data === 'object' && data.data.hash) {
+                        payload = JSON.parse(decodeURIComponent(data.data.hash));
                     }
                 }
 
