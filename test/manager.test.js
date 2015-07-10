@@ -36,6 +36,7 @@ function queueRandom(num) {
 }
 
 describe('Manager', function () {
+    this.timeout(5000);    
 
     it('should be defined', function () {
         var manager = helpers.testableManager();
