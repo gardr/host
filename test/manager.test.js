@@ -288,6 +288,7 @@ describe('Manager', function () {
     });
 
     describe('render', function () {
+        this.timeout(5000);
         var manager = helpers.testableManager();
 
         it('should return a Error if non existing configname', function () {
