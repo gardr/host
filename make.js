@@ -28,10 +28,18 @@ target.lint = function () {
 
 function setupPhantomPath() {
     if (!env['PHANTOMJS_BIN']) {
-        var path  = require('phantomjs2').path;
-        if (path) {
-            env['PHANTOMJS_BIN'] = path;
-        }
+        try {
+            var path  = require('phantomjs2').path;
+            if (path) {
+                env['PHANTOMJS_BIN'] = path;
+            }
+            if (!path) {
+                path  = require('phantomjs').path;
+                if (path) {
+                    env['PHANTOMJS_BIN'] = path;
+                }
+            }
+        } catch(e){}
     }
 }
 
