@@ -13,3 +13,4 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### New / Added
 - Trigger "item:queued" for the pluginApi on item queued (sgulseth)
 - Added possibility to update url or data for each position, with dirty check that refreshes if position if already rendered
+- Added title attribute to iframes 
