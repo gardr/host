@@ -26,15 +26,24 @@ target.lint = function () {
     );
 };
 
+function setupPhantomPath() {
+    if (!env['PHANTOMJS_BIN']) {
+        var path  = require('phantomjs2').path;
+        if (path) {
+            env['PHANTOMJS_BIN'] = path;
+        }
+    }
+}
+
 target.test = function () {
     target.lint();
-    env['PHANTOMJS_BIN'] = require('phantomjs2').path;
+    setupPhantomPath();
     karma('start', '--single-run');
 };
 
 target.ci = function () {
     target.lint();
-    env['PHANTOMJS_BIN'] = require('phantomjs2').path;
+    setupPhantomPath();
     ['ie', 'ienew', 'chrome', 'android', 'ios', 'firefox'].forEach(function(browserType){
         env['BROWSER_TYPE'] = browserType;
         karma('start', '--single-run');
@@ -43,6 +52,6 @@ target.ci = function () {
 
 target.watch = function () {
     target.lint();
-    env['PHANTOMJS_BIN'] = require('phantomjs2').path;
+    setupPhantomPath();
     karma('start');
 };
