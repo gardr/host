@@ -552,6 +552,84 @@ describe('Manager', function () {
         });
     });
 
+    describe('setUrlMap', function() {
+        it('should update url from urlmap object', function(done) {
+            var name = 'iframe_update_url' + helpers.getRandomName();
+            var manager = helpers.testableManager();
+
+            var container = helpers.insertContainer(name);
+
+            manager.queue(name, {
+                'container': container,
+                'url': SCRIPT_URL
+            });
+
+            manager.render(name, function(err, item){
+                expect(item.state).to.equal(State.RESOLVED);
+                var urlMap = {};
+                urlMap[name] = SCRIPT_URL;
+                manager.setUrlMap(urlMap, function(err, item) {
+
+                    expect(item.rendered.times).to.equal(2);
+
+                    urlMap[name] = SCRIPT_URL + '?some=other';
+
+                    manager.setUrlMap(urlMap, function(err, item) {
+
+                        expect(item.rendered.times).to.equal(3);
+
+                        done();
+                    });
+                });
+            });
+
+        });
+
+        it('should update multiple urls and always refresh', function(done) {
+            var manager = helpers.testableManager();
+            var urlMap = {};
+            [SCRIPT_URL, SCRIPT_URL, SCRIPT_URL].forEach(function(name, i) {
+                urlMap[i] = name + '?i=' + i;
+
+                var container = helpers.insertContainer(i);
+                manager.queue(name, {
+                    'container': container,
+                    'url': urlMap[i]
+                });
+            });
+
+            var i = 3;
+            var items = [];
+            manager.renderAll(function(err, item){
+                expect(err).not.to.be.ok();
+                items.push(item);
+                i--;
+                if (i === 0) {
+                    items.forEach(function(item){
+                        expect(item.rendered.times).to.be(1);
+                    });
+                    ready();
+                }
+            });
+
+            function ready() {
+                var i  = 3;
+                manager.setUrlMap(urlMap, function(err){
+                    expect(err).not.to.be.ok();
+                    i--;
+                    if (i === 0) {
+                        items.forEach(function(item){
+                            expect(item.rendered.times).to.be(2);
+                        });
+                        done();
+                    }
+                });
+            }
+
+        });
+    });
+
+
     describe('setData', function() {
         it('should update data', function(done) {
             var name = 'iframe_update_state' + helpers.getRandomName();
