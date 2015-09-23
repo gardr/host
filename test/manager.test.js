@@ -381,12 +381,10 @@ describe('Manager', function () {
                 url: SCRIPT_URL
             });
 
-            manager.render(name, function (err) {
+            manager.render(name, function (err, item) {
                 expect(err).to.be.an(Error);
-                expect(manager._get(name)[0].options.container).to.be(null);
-                expect(manager._get(name)[0].iframe).to.be(null);
-                expect(manager.items.length).to.be(0);
-
+                expect(item.options.container).to.be(null);
+                expect(item.iframe).to.be(null);
             });
         });
 
