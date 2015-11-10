@@ -922,15 +922,21 @@ describe('Manager', function () {
 
         var _i = document.createElement('iframe');
         _i.allowfullscreen = _i.webkitallowfullscreen = _i.mozallowfullscreen = true;
-        if (_i.allowfullscreen || _i.webkitallowfullscreen || _i.mozallowfullscreen) {
+        _i.setAttribute('allowfullscreen', 'true');
+        _i.setAttribute('webkitallowfullscreen', 'true');
+        _i.setAttribute('mozallowfullscreen', 'true');
+
+        if (_i.hasAttribute('allowfullscreen') || _i.hasAttribute('webkitallowfullscreen') ||
+            _i.hasAttribute('mozallowfullscreen')) {
+
             it('should not enable fullcreen by default', function(done) {
                 var name = helpers.getRandomName();
 
                 manager.queue(name, {url: 'about:blank'});
                 manager.render(name, function(err, item){
-                    expect(item.iframe.element.allowfullscreen).not.to.be.ok();
-                    expect(item.iframe.element.webkitallowfullscreen).not.to.be.ok();
-                    expect(item.iframe.element.mozallowfullscreen).not.to.be.ok();
+                    expect(item.iframe.element.getAttribute('allowfullscreen')).not.to.be.ok();
+                    expect(item.iframe.element.getAttribute('webkitallowfullscreen')).not.to.be.ok();
+                    expect(item.iframe.element.getAttribute('mozallowfullscreen')).not.to.be.ok();
                     done();
                 });
             });
@@ -942,9 +948,9 @@ describe('Manager', function () {
                 manager.queue(name, {url: 'about:blank', allowfullscreen: true});
                 manager.render(name, function(err, item){
                     expect(
-                        item.iframe.element.allowfullscreen||
-                        item.iframe.element.webkitallowfullscreen||
-                        item.iframe.element.mozallowfullscreen
+                        item.iframe.element.hasAttribute('allowfullscreen')||
+                        item.iframe.element.hasAttribute('webkitallowfullscreen')||
+                        item.iframe.element.hasAttribute('mozallowfullscreen')
                     ).to.be.ok();
                     done();
                 });
